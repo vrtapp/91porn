@@ -1,18 +1,28 @@
-package com.example.demo;
+package com.jw.porn;
 
-import com.example.demo.config.MyappConfig;
-import com.example.demo.utils.DealStrSub;
-import com.example.demo.utils.JsUtil;
-import com.example.demo.utils.VideoUtils;
 import com.gargoylesoftware.htmlunit.html.*;
+import com.jw.porn.config.MyappConfig;
+import com.jw.porn.utils.DealStrSub;
+import com.jw.porn.utils.JsUtil;
+import com.jw.porn.utils.VideoUtils;
 import it.sauronsoftware.jave.EncoderException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -25,14 +35,16 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
-import static com.example.demo.config.MyappConfig.*;
-import static com.example.demo.utils.WebUtil.UnitPage;
+import static com.jw.porn.config.MyappConfig.*;
+import static com.jw.porn.utils.WebUtil.UnitPage;
 
 @SpringBootApplication
 @Slf4j
 @EnableConfigurationProperties({MyappConfig.class})
 @EnableScheduling
-public class DemoApplication {
+@Controller
+@RequestMapping("/video")
+public class PornApplication {
     public static String BOT_NAME = "porn_91Bot";
     public static String PROXY_HOST = "127.0.0.1" /* proxy host */;
     public static Integer PROXY_PORT = 10809 /* proxy port */;
@@ -40,40 +52,48 @@ public class DemoApplication {
     public static String VIDEO_MP4 = ".mp4";
     public static String VIDEO_JPEG = ".jpeg";
     public static MyAmazingBot bot;
-    public static String env=null;
+    public static String env = null;
 
-    public static void main(String[] args) throws TelegramApiException, ExecutionException, InterruptedException, IOException, EncoderException {
-        ConfigurableApplicationContext ctx = SpringApplication.run(DemoApplication.class, args);
+    @Autowired
+    private RetryTemplate retryTemplate;
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext ctx = SpringApplication.run(PornApplication.class, args);
         env=ctx.getEnvironment().getActiveProfiles()[0];
         log.info("当前环境：===================" + env);
         log.info("ffmpeg路径：：" + FFMPEG_ROOT);
         initBot();
     }
 
+
     /**
-     *   每天上午5点15分执行
+     * 每天上午5点15分执行
      */
     @Scheduled(cron = "0 15 5 ? * * ")
-    public void scheduledTask() throws TelegramApiException, EncoderException, IOException, ExecutionException, InterruptedException {
+    @RequestMapping("/on")
+    public void scheduledTask() throws Throwable {
         System.out.println("任务执行时间：" + LocalDateTime.now());
         java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(Level.OFF);
         HtmlPage htmlPage = UnitPage("https://91porn.com/index.php");
         log.info("---------------------------------------------------");
         HtmlPage page = htmlPage.getPage();
         List<Object> byXPath = page.getByXPath("//*[@id=\"wrapper\"]/div[1]/div[2]/div/div/div");
+
+
         for (int i = 0, byXPathSize = byXPath.size(); i < byXPathSize; i++) {
-            itemDownLoad(byXPath, i);
+            int finalI = i;
+            Boolean execute = retryTemplate.execute(context -> {
+                itemDownLoad(byXPath, finalI);
+                return null;
+            }, retryContext -> false);
+            //重试n次还错误，继续下一个下载任务
+            if (!execute){
+                continue;
+            }
+
         }
         log.info("==================所有任务完成!!!!!!!!!!!!!!!!!!!!!!!!!!!!!===============================");
     }
-
-
-    //任务执行完成，退出
-    public static void exitApplication(ConfigurableApplicationContext context) {
-        int exitCode = SpringApplication.exit(context, () -> 0);
-        System.exit(exitCode);
-    }
-
 
     private static void initBot() {
         //初始化 BOT
@@ -101,7 +121,7 @@ public class DemoApplication {
     }
 
 
-    private static void itemDownLoad(List<Object> byXPath, int i) throws IOException, InterruptedException, ExecutionException, TelegramApiException, EncoderException {
+    private static void itemDownLoad(List<Object> byXPath, int i) throws Exception {
         Object o = byXPath.get(i);
         HtmlDivision item = (HtmlDivision) o;
         DomNodeList<HtmlElement> a = item.getElementsByTagName("a");
@@ -123,10 +143,13 @@ public class DemoApplication {
         String realVideoUrl = DealStrSub.getSubUtilSimple(strencode, rgex);
         //真实地址
         log.warn("真实地址：" + realVideoUrl);
-        String realPath="";
-        if (env.equals("dev")){
-             realPath = FILE_ROOT + videoName + "\\";
-        }else {
+        if (StringUtil.isBlank(realVideoUrl)){
+            throw new RuntimeException("真实地址为空");
+        }
+        String realPath = "";
+        if (env.equals("dev")) {
+            realPath = FILE_ROOT + videoName + "\\";
+        } else {
             realPath = FILE_ROOT + videoName + "/";
         }
 
@@ -134,16 +157,12 @@ public class DemoApplication {
         if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
-         //转mp4
+        //转mp4
         VideoUtils.convertToMp42(realVideoUrl,
                 new File(realPath + videoName + VIDEO_JPEG),
-                realPath,videoName);
-        
+                realPath, videoName);
 
-        bot.sendVideo2(realPath + videoName + VIDEO_JPEG,realPath,
-                " 收藏: "+ shoucang,null);
-
+        bot.sendVideo2(realPath + videoName + VIDEO_JPEG, realPath,
+                " 收藏: " + shoucang, null);
     }
-
-
 }

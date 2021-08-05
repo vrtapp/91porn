@@ -10,10 +10,12 @@
 
 由于电报Bot单次发送最大50M文件，切割发送视频(MP4Box大法好!!!)
 
+重试机制，网络超时重试
+
 
 ## 环境
 
-jdk1.8
+java11
 
 电报机器人申请
 
@@ -22,6 +24,7 @@ MP4Box、Ffmpeg安装。
 MP4Box 安装
 https://gpac.wp.imt.fr/downloads/
 https://github.com/gpac/gpac/wiki/GPAC-Build-Guide-for-Linux
+
 
 
 配置在yml

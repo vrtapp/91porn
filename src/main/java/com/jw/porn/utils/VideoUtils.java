@@ -1,4 +1,4 @@
-package com.example.demo.utils; /**
+package com.jw.porn.utils; /**
 * @Author:psw
 * @Description:获取视频宽高大小时间工具类
 */
@@ -15,17 +15,20 @@ import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.probe.FFmpegFormat;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.demo.DemoApplication.VIDEO_MP4;
-import static com.example.demo.DemoApplication.env;
-import static com.example.demo.config.MyappConfig.FFMPEG_ROOT;
-import static com.example.demo.config.MyappConfig.MP4BOX_ROOT;
+import static com.jw.porn.PornApplication.VIDEO_MP4;
+import static com.jw.porn.PornApplication.env;
+import static com.jw.porn.config.MyappConfig.FFMPEG_ROOT;
+import static com.jw.porn.config.MyappConfig.MP4BOX_ROOT;
+
 
 @Slf4j
 public class VideoUtils {
@@ -113,18 +116,6 @@ public class VideoUtils {
 
         return Runtime.getRuntime().exec(command + strCmd);
     }
-
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//
-//        String strCmd ="E:\\Utils\\GPAC\\"+"mp4box -splits 51200"+ " F:\\m3u8JavaTest\\[原创]6小时车轮战，都累了\\aa.mp4";
-//        Process process = Runtime.getRuntime().exec(strCmd);
-//        BufferedReader strCon = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        String line;
-//        while ((line = strCon.readLine()) != null) {
-//            System.out.println("java print:"+line);
-//        }
-//
-//    }
 
 
     /**

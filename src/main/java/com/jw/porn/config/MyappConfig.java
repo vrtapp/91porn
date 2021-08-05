@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.jw.porn.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,13 +12,15 @@ import org.springframework.stereotype.Component;
  * @create: 2021-07-18 08:20
  **/
 @Data
-@ConfigurationProperties(prefix = "myappconfig")
+@ConfigurationProperties(prefix="myappconfig")
 @Component
 public class MyappConfig {
 
     public static Boolean ON_PROXY;
 
     public static String FFMPEG_ROOT;
+
+
 
     public static String MP4BOX_ROOT;
 
@@ -30,33 +32,34 @@ public class MyappConfig {
 
 
     @Value("${myappconfig.mp4box_root}")
-    public void setMp4boxRoot(String mp4boxRoot) {
+    public  void setMp4boxRoot(String mp4boxRoot) {
         MP4BOX_ROOT = mp4boxRoot;
     }
 
 
     @Value("${myappconfig.bot_token}")
-    public void setBotToken(String botToken) {
+    public  void setBotToken(String botToken) {
         BOT_TOKEN = botToken;
     }
 
     @Value("${myappconfig.chat_id}")
-    public void setChatId(String chatId) {
+    public  void setChatId(String chatId) {
         CHAT_ID = chatId;
     }
 
     @Value("${myappconfig.fileroot}")
-    public void setFileRoot(String fileRoot) {
+    public  void setFileRoot(String fileRoot) {
         FILE_ROOT = fileRoot;
     }
 
     @Value("${myappconfig.ffmpeg_root}")
-    public void setFfmpegRoot(String ffmpegRoot) {
+    public  void setFfmpegRoot(String ffmpegRoot) {
         FFMPEG_ROOT = ffmpegRoot;
     }
 
     @Value("${myappconfig.proxy_on}")
     public void setOnProxy(Boolean proxy_on) {
+
         ON_PROXY = proxy_on;
     }
 

@@ -1,13 +1,11 @@
-package com.example.demo.utils;
+package com.jw.porn.utils;
 
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-@Slf4j
+
 class RunThread extends Thread
 {
     InputStream is;
@@ -28,7 +26,7 @@ class RunThread extends Thread
             BufferedReader br = new BufferedReader(isr);
             String line;
             while ( (line = br.readLine()) != null) {
-                log.info(type + ">" + line);
+                System.out.println(type + ">" + line);
             }
             } catch (IOException ioe)
               {
