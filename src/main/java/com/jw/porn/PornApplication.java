@@ -84,7 +84,7 @@ public class PornApplication {
             int finalI = i;
             Boolean execute = retryTemplate.execute(context -> {
                 itemDownLoad(byXPath, finalI);
-                return null;
+                return true;
             }, retryContext -> false);
             //重试n次还错误，继续下一个下载任务
             if (!execute){
