@@ -24,7 +24,10 @@ MP4Box、Ffmpeg安装。
 
 MP4Box 安装
 https://gpac.wp.imt.fr/downloads/
+
 https://github.com/gpac/gpac/wiki/GPAC-Build-Guide-for-Linux
+
+debian10编译好的: https://github.com/jw-star/myFigurebed/releases/download/1.00/gpac.tar.gz
 
 
 ## 修改配置(需要修改的地方)
