@@ -1,7 +1,8 @@
 # 基于telegramBot、Ffmpeg、MP4Box、UnitPage的爬取视频、发送视频的机器人
+
 91视频爬取
-
-
+# java的不进行维护了，使用go实现的版本 https://github.com/jw-star/pornbot_go
+# 内存占用更低，方便维护
 ## 特点
 
 破解91视频的播放限制、理论上可以无限下载
