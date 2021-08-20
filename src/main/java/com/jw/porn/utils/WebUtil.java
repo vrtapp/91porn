@@ -51,10 +51,14 @@ public class WebUtil {
         }
         webClient.addRequestHeader("Accept-Language", "zh-cn,zh;q=0.5");
         webClient.addRequestHeader("Connection", "keep-alive");
+        //伪装ip
+        Random r = new Random();
+        Strig ip= r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
+        webClient.addRequestHeader("X-Forwarded-For", ip);
         page = webClient.getPage(url);
         // 等待js后台执行30秒
         webClient.waitForBackgroundJavaScript(30 * 1000);
-
+        
 
         return page;
     }
