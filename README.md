@@ -1,6 +1,7 @@
 # 基于telegramBot、Ffmpeg、MP4Box、UnitPage的爬取视频、发送视频的机器人
 
 91视频爬取
+# 网站已开启机器人验证
 # java的不进行维护了，使用go实现的版本 https://github.com/jw-star/pornbot_go
 # 内存占用更低，方便维护
 ## 特点
