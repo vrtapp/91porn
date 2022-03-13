@@ -2,7 +2,7 @@
 
 91视频爬取
 
-# java的不进行维护了，使用go实现的版本 https://github.com/jw-star/pornbot_go
+# java的不进行维护了，使用py实现的版本 https://github.com/jw-star/pornbot91_py
 # 内存占用更低，方便维护
 ## 特点
 
