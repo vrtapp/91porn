@@ -1,0 +1,11 @@
+Faker
+pyppeteer
+telethon
+cryptg
+redis
+hachoir
+tenacity
+jieba
+APScheduler
+ffmpy3
+aiohttp
