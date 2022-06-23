@@ -17,8 +17,10 @@ captionTemplate = '''标题: %s
 作者: %s
 关键词： %s
 '''
+
 buttons = [
-    Button.url('测试', 'https://baidu.com'),
+    Button.url('11111', 'https://1111111111'),
+    Button.url('11111', 'https://111111111111'),
 ]
 
 REDIS_HOST = os.getenv('REDIS_HOST')
@@ -70,8 +72,6 @@ async def send_welcome(event):
            部分高清视频刚发布后还在转码，大概在视频发布时间一小时后再尝试发送链接下载.  
 
 ''')
-
-
 
 
 
@@ -137,7 +137,7 @@ async def echo_all(event):
         viewkey = p.path.replace('/', '')
         print("消息来自:" + str(sender.username), ":", text)
         videoInfo = await page91.getHs(text)
-        await util.download91(videoInfo.realM3u8, viewkey)
+        await util.download91(videoInfo.realM3u8, viewkey,5)
 
         # 截图
         await util.imgCover(videoInfo.imgUrl, viewkey + '/' + viewkey + '.jpg')

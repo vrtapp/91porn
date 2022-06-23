@@ -113,10 +113,9 @@ async def page91Index():
 
 async def getHs(url):
     async with aiohttp.request("GET", url,
-                               proxy='http://127.0.0.1:10809',
+                               # proxy='http://127.0.0.1:10809',
                                connector=TCPConnector(verify_ssl=False)
                                ) as r:
-        print(await r.text())
         text = await r.text()
         urls = re.findall('<source src="(.*?)"', text)
         titles = re.findall(r'<h3 class="panel-title">(.*?)<', text)
