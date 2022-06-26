@@ -52,7 +52,7 @@ async def getFromredis(key):
 
 @bot.on(events.NewMessage(pattern='/start'))
 async def send_welcome(event):
-    await event.client.send_message(event.chat_id, '向我发送91视频链接，获取视频,有问题请留言 @bzhzq')
+    await event.client.send_message(event.chat_id, '向我发送91视频链接，获取视频')
 
 
 @bot.on(events.NewMessage(pattern='/get91home'))
